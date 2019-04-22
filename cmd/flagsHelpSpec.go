@@ -85,6 +85,10 @@ var monitoringSpec = `Enables monitoring for the instances`
 var key string
 var keySpec = `Key name to access the instances`
 
+var sigtermTimeout string
+var sigtermTimeoutSpec = `Time duration to wait from when a task is stopped before its containers are forcefully killed if they do not exit normally on their own(default is 30s)
+Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", and "h"`
+
 var ebs bool
 var ebsSpec = `Use EBS optimized`
 

@@ -18,6 +18,7 @@ import (
 var spotFleetUserData = `
 #!/bin/bash
 echo ECS_CLUSTER={{.Cluster}} >> /etc/ecs/ecs.config
+echo ECS_CONTAINER_STOP_TIMEOUT={{.SigtermTimeout}} >> /etc/ecs/ecs.config
 echo ECS_BACKEND_HOST= >> /etc/ecs/ecs.config
 export PATH=/usr/local/bin:$PATH
 yum -y install jq
@@ -79,6 +80,7 @@ func clustersAddSpotFleetRun(cmd *cobra.Command, clusters []string) {
 	userDataF := new(bytes.Buffer)
 	typist.Must(tmpl.Execute(userDataF, templateUserData{
 		Cluster: *c.ClusterName,
+		SigtermTimeout: sigtermTimeout,
 		Region:  aws.StringValue(awsSession.Config.Region),
 	}))
 
@@ -211,6 +213,7 @@ func init() {
 	flags.StringVar(&kernelID, "kernel-id", "", kernelIDSpec)
 	flags.BoolVar(&ebs, "ebs", false, ebsSpec)
 	flags.StringVarP(&key, "key", "k", "", keySpec)
+	flags.StringVar(&sigtermTimeout, "sigterm-timeout", "30s", sigtermTimeoutSpec)
 	flags.StringSliceVarP(&tags, "tag", "t", []string{}, tagsSpec)
 
 	clustersAddSpotFleetCmd.MarkFlagRequired("subnets")
